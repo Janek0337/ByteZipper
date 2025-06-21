@@ -31,4 +31,13 @@ void burrows_wheeler_encode(){
         int last_idx = elems[i] - 1 >= 0 ? elems[i]-1 : bytesRead-1;
         NEW_BUF[i] = THE_BUF[last_idx];
     }
+    for(int i = 0; i < bytesRead; i++){
+        if(NEW_BUF[i] == bytesRead-1){
+            BWT_start = i;
+            break;
+        }
+    }
+    free(THE_BUF);
+    THE_BUF = NEW_BUF;
+    NEW_BUF = NULL;
 }

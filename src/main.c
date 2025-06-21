@@ -2,9 +2,14 @@
 #include "burrows-wheeler.h"
 #include "globals.h"
 #include <stdlib.h>
-int main(){
-    FILE* in = fopen("./dane.txt", "rb");
+int main(int argc, char** argv){
+    if(argc < 1){
+        fprintf(stderr, "Za mala liczba argumentow\n");
+        return 1;
+    }
+    FILE* in = fopen(argv[1], "rb");
     if(in == NULL){
+        fprintf(stderr, "Nie udalo sie otworzyc pliku \"%s\"\n", argv[1]);
         return 1;
     }
     THE_BUF = malloc(BUFSIZE*sizeof(unsigned char));
