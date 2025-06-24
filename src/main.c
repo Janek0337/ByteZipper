@@ -2,6 +2,7 @@
 #include "burrows-wheeler.h"
 #include "globals.h"
 #include <stdlib.h>
+#include <string.h>
 int main(int argc, char** argv){
     if(argc < 1){
         fprintf(stderr, "Za mala liczba argumentow\n");
@@ -12,8 +13,8 @@ int main(int argc, char** argv){
         fprintf(stderr, "Nie udalo sie otworzyc pliku \"%s\"\n", argv[1]);
         return 1;
     }
-    THE_BUF = malloc(BUFSIZE*sizeof(unsigned char));
-    while((bytesRead = fread(THE_BUF, sizeof(unsigned char), BUFSIZE, in)) > 0){
+    THE_BUF = malloc(BUFSIZE*sizeof(byte));
+    while((bytesRead = fread(THE_BUF, sizeof(byte), BUFSIZE, in)) > 0){
         burrows_wheeler_encode(bytesRead);
     }
 
