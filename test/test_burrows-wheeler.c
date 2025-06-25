@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <burrows-wheeler.h>
 #include <string.h>
+#include <globals.h>
 
 void assert_transform_works(byte* original, byte* expected, int bytes, int expectedIndx){
     int result = burrows_wheeler_encode(&original, bytes);
@@ -16,16 +17,20 @@ void assert_reversed_transform_works(byte* transform, byte* original, int bytes,
 
 int main(void){
     int bytes = 9;
-    byte* original = malloc(bytes);
+    byte* original = malloc_check(malloc(bytes));
     byte orig[] = {'b','e','n','i','o','w','s','k','i'};
     memcpy(original, orig, bytes);
 
-    byte* expected = malloc(bytes);
+    byte* expected = malloc_check((bytes));
     byte exp[] = {'i','b','k','n','s','e','i','w','o'};
     memcpy(expected, exp, bytes);
 
     int expectedIndx = 1;
     assert_transform_works(original, expected, bytes, expectedIndx);
     assert_reversed_transform_works(expected, original, bytes, expectedIndx);
+
+    free(original);
+    free(expected);
+
     return 0;
 }

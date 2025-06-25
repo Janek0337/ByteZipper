@@ -3,6 +3,9 @@
 #include "globals.h"
 #include <stdlib.h>
 #include <string.h>
+
+#define BUFSIZE 400
+
 int main(int argc, char** argv){
     if(argc < 1){
         fprintf(stderr, "Too few arguments\n");
@@ -13,11 +16,7 @@ int main(int argc, char** argv){
         fprintf(stderr, "Couldn't open file: \"%s\"\n", argv[1]);
         return 1;
     }
-    byte* THE_BUF = malloc(BUFSIZE*sizeof(byte));
-    if(THE_BUF == NULL){
-        fprintf(stderr, "Memory allocation error\n");
-        return 1;
-    }
+    byte* THE_BUF = malloc_check(malloc(BUFSIZE*sizeof(byte)));
     int bytesRead, BWT_start;
     while((bytesRead = fread(THE_BUF, sizeof(byte), BUFSIZE, in)) > 0){
         BWT_start = burrows_wheeler_encode(&THE_BUF, bytesRead);

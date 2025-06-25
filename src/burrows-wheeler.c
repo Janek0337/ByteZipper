@@ -27,14 +27,14 @@ int burrows_wheeler_encode(byte** THE_BUF, int bytesRead){ // modified *THE_BUF 
     for(int i = 0; i < bytesRead; i++){
         elems[i] = i;
     }
-    context* c = malloc(sizeof(context));
+    context* c = malloc_check((sizeof(context)));
     c->BUF = *THE_BUF;
     c->bytesRead = bytesRead;   
     qsort_r(elems, bytesRead, sizeof(int), cmp, c);
     
     free(c);
     c = NULL;
-    byte* NEW_BUF = malloc(bytesRead*sizeof(byte));
+    byte* NEW_BUF = malloc_check((bytesRead*sizeof(byte)));
 
     // NEW_BUF contains the last column
     for(int i = 0; i < bytesRead; i++){
@@ -101,11 +101,12 @@ void burrows_wheeler_decode(byte** THE_BUF, int bytesRead, int BWT_start){
         }
     }
     int pos = BWT_start;
-    byte* NEW_BUF = malloc(bytesRead*sizeof(byte));
+    byte* NEW_BUF = malloc_check((bytesRead*sizeof(byte)));
     for (int i = 0; i < bytesRead; i++) {
         NEW_BUF[i] = (*THE_BUF)[pos];
         pos = lf_map[pos];
     }
+    
     free(*THE_BUF);
     *THE_BUF = NEW_BUF;
     NEW_BUF = NULL;
