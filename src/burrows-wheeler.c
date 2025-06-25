@@ -1,41 +1,49 @@
+#define _GNU_SOURCE
 #include <stdlib.h>
 #include <stdio.h>
 #include "globals.h"
+#include "burrows-wheeler.h"
 
-int cmp(const void* a, const void* b){
+int cmp(const void* a, const void* b, void* arg){
     int ia = *(int*)a;
     int ib = *(int*)b;
-    for(int i = 0; i < bytesRead; i++){
-        if(THE_BUF[ia] > THE_BUF[ib]){
+    context* c = (context*)arg;
+    for(int i = 0; i < c->bytesRead; i++){
+        if(c->BUF [ia] > c->BUF[ib]){
             return 1; 
         }
-        else if (THE_BUF[ia] < THE_BUF[ib]){
+        else if (c->BUF[ia] < c->BUF[ib]){
             return -1;
         }
-        ia = (ia + 1) % bytesRead;
-        ib = (ib + 1) % bytesRead;
+        ia = (ia + 1) % c->bytesRead;
+        ib = (ib + 1) % c->bytesRead;
     }
     return 0;
 }
 
-void burrows_wheeler_encode(){
+int burrows_wheeler_encode(byte** THE_BUF, int bytesRead){ // modified *THE_BUF to be transformed data
     // each number in elems represents how many bytes has the buf been rotated
     int elems[bytesRead];
     for(int i = 0; i < bytesRead; i++){
         elems[i] = i;
     }
-       
-    qsort(elems, bytesRead, sizeof(int), cmp);
+    context* c = malloc(sizeof(context));
+    c->BUF = *THE_BUF;
+    c->bytesRead = bytesRead;   
+    qsort_r(elems, bytesRead, sizeof(int), cmp, c);
     
-    byte*  NEW_BUF = malloc(bytesRead*sizeof(byte));
+    free(c);
+    c = NULL;
+    byte* NEW_BUF = malloc(bytesRead*sizeof(byte));
 
     // NEW_BUF contains the last column
     for(int i = 0; i < bytesRead; i++){
         int last_idx = elems[i] - 1 >= 0 ? elems[i]-1 : bytesRead-1;
-        NEW_BUF[i] = THE_BUF[last_idx];
+        NEW_BUF[i] = (*THE_BUF)[last_idx];
     }
 
     // finding which rotation is the one with original first byte at the last column (one move to the left)
+    int BWT_start;
     for(int i = 0; i < bytesRead; i++){
         if(elems[i] == 1){
             BWT_start = i;
@@ -43,25 +51,31 @@ void burrows_wheeler_encode(){
         }
     }
 
-    free(THE_BUF);
-    THE_BUF = NEW_BUF;
+    free(*THE_BUF);
+    *THE_BUF = NEW_BUF;
     NEW_BUF = NULL;
+    return BWT_start;
 }
 
 
-void burrows_wheeler_decode(){
+void burrows_wheeler_decode(byte** THE_BUF, int bytesRead, int BWT_start){
+    /*
+    modifies *THE_BUF to become the original data
+    BWT_start is index of the byte that was ofiginally the first one
+    */
+    
     // creating first column via count sort and indexing bytes to differentiate between the same ones
     int count[256] = {0};
     int rank_L[bytesRead];
     int rank_F[bytesRead];
 
     for (int i = 0; i < bytesRead; i++){
-        rank_L[i] = count[THE_BUF[i]]++;
+        rank_L[i] = count[(*THE_BUF)[i]]++;
     }
 
     int count_sort[256] = {0};
     for (int i = 0; i < bytesRead; i++) {
-        count_sort[THE_BUF[i]]++;
+        count_sort[(*THE_BUF)[i]]++;
     }
 
     byte first_col[bytesRead]; 
@@ -80,7 +94,7 @@ void burrows_wheeler_decode(){
     int lf_map[bytesRead];
     for(int i = 0; i < bytesRead; i++){
         for(int j = 0; j < bytesRead; j++){
-            if(THE_BUF[i] == first_col[j] && rank_L[i] == rank_F[j]){
+            if((*THE_BUF)[i] == first_col[j] && rank_L[i] == rank_F[j]){
                 lf_map[j] = i;
                 break;
             }
@@ -89,10 +103,10 @@ void burrows_wheeler_decode(){
     int pos = BWT_start;
     byte* NEW_BUF = malloc(bytesRead*sizeof(byte));
     for (int i = 0; i < bytesRead; i++) {
-        NEW_BUF[i] = THE_BUF[pos];
+        NEW_BUF[i] = (*THE_BUF)[pos];
         pos = lf_map[pos];
     }
-    free(THE_BUF);
-    THE_BUF = NEW_BUF;
+    free(*THE_BUF);
+    *THE_BUF = NEW_BUF;
     NEW_BUF = NULL;
 }

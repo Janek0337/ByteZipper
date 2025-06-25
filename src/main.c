@@ -5,19 +5,25 @@
 #include <string.h>
 int main(int argc, char** argv){
     if(argc < 1){
-        fprintf(stderr, "Za mala liczba argumentow\n");
+        fprintf(stderr, "Too few arguments\n");
         return 1;
     }
     FILE* in = fopen(argv[1], "rb");
     if(in == NULL){
-        fprintf(stderr, "Nie udalo sie otworzyc pliku \"%s\"\n", argv[1]);
+        fprintf(stderr, "Couldn't open file: \"%s\"\n", argv[1]);
         return 1;
     }
-    THE_BUF = malloc(BUFSIZE*sizeof(byte));
+    byte* THE_BUF = malloc(BUFSIZE*sizeof(byte));
+    if(THE_BUF == NULL){
+        fprintf(stderr, "Memory allocation error\n");
+        return 1;
+    }
+    int bytesRead, BWT_start;
     while((bytesRead = fread(THE_BUF, sizeof(byte), BUFSIZE, in)) > 0){
-        burrows_wheeler_encode(bytesRead);
+        BWT_start = burrows_wheeler_encode(&THE_BUF, bytesRead);
     }
 
     fclose(in);
+    free(THE_BUF);
     return 0;
 }
