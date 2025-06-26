@@ -3,16 +3,16 @@
 #include <burrows-wheeler.h>
 #include <string.h>
 #include <globals.h>
-
-void assert_transform_works(byte* original, byte* expected, int bytes, int expectedIndx){
-    int result = burrows_wheeler_encode(&original, bytes);
-    assert(!memcmp(original, expected, bytes));
+#include <stdio.h>
+void assert_transform_works(byte** original, byte* expected, int bytes, int expectedIndx){
+    int result = burrows_wheeler_encode(original, bytes);
+    assert(!memcmp(*original, expected, bytes));
     assert(result == expectedIndx);
 }
 
-void assert_reversed_transform_works(byte* transform, byte* original, int bytes, int indx){
-    burrows_wheeler_decode(&transform, bytes, indx);
-    assert(!memcmp(transform, original, bytes));
+void assert_reversed_transform_works(byte** transform, byte* original, int bytes, int indx){
+    burrows_wheeler_decode(transform, bytes, indx);
+    assert(!memcmp(*transform, original, bytes));
 }
 
 int main(void){
@@ -21,16 +21,15 @@ int main(void){
     byte orig[] = {'b','e','n','i','o','w','s','k','i'};
     memcpy(original, orig, bytes);
 
-    byte* expected = malloc_check((bytes));
+    byte* expected = malloc_check(malloc(bytes));
     byte exp[] = {'i','b','k','n','s','e','i','w','o'};
     memcpy(expected, exp, bytes);
 
     int expectedIndx = 1;
-    assert_transform_works(original, expected, bytes, expectedIndx);
-    assert_reversed_transform_works(expected, original, bytes, expectedIndx);
-
+    assert_transform_works(&original, expected, bytes, expectedIndx);
+    memcpy(original, orig, bytes);
+    assert_reversed_transform_works(&expected, original, bytes, expectedIndx);
     free(original);
     free(expected);
-
     return 0;
 }
