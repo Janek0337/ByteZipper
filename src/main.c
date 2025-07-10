@@ -23,7 +23,7 @@ int main(int argc, char** argv){
     while((bytesRead = fread(THE_BUF, sizeof(byte), BUFSIZE, in)) > 0){
         BWT_start = burrows_wheeler_encode(&THE_BUF, bytesRead);
         MTF_encode(THE_BUF, bytesRead);
-        int new_size = run_length_code_encode(&THE_BUF, bytesRead); 
+
     }
 
     fclose(in);

@@ -4,8 +4,12 @@
 
 void* malloc_check(void* ptr){
     if(ptr == NULL){
-        fprintf(stderr, "Memory allocation error\n");
-        exit(EXIT_FAILURE);
+        throw_fatal_error("Memory allocation error\n");
     }
     return ptr;
+}
+
+void throw_fatal_error(const char message[]){
+    fputs(stderr, message);
+    exit(EXIT_FAILURE);
 }
