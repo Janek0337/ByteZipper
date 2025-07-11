@@ -24,18 +24,6 @@ int main(int argc, char** argv){
     while((bytesRead = fread(THE_BUF, sizeof(byte), BUFSIZE, in)) > 0){
         BWT_start = burrows_wheeler_encode(&THE_BUF, bytesRead);
         MTF_encode(THE_BUF, bytesRead);
-
-        node_darray* pq = node_darray_init(8);
-        for(int i = 5; i > 0; i--){
-            node_t* new = make_node('a',i);
-            printf("hej");
-            node_add_to_darray(pq, new);
-        }
-        build_heap(pq);
-        for(int i = pq->elem_count-1; i > 0; i--){
-            if(pq->array[i]->count > pq->array[(i-1)/2]->count)
-            {printf("Git\n");}
-        }
     }
 
     fclose(in);
