@@ -11,7 +11,7 @@ typedef struct nodzik{
 } node_t;
 
 
-DEFINE_DYNAMIC_ARRAY_FOR_TYPE(node_t*, node)
+DECLARE_DYNAMIC_ARRAY_FOR_TYPE(node_t*, node)
 
 node_t* make_node(byte byte, int count);
 void heapUp(node_darray* arr);

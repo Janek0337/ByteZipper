@@ -4,13 +4,22 @@
 #include "globals.h"
 #include <stdlib.h>
 
-#define DEFINE_DYNAMIC_ARRAY_FOR_TYPE(TYPE, PREFIX) \
-typedef struct{ \
+#define DECLARE_DYNAMIC_ARRAY_FOR_TYPE(TYPE, PREFIX) \
+typedef struct { \
     TYPE* array; \
     int size; \
     int elem_count; \
 } PREFIX##_darray; \
- \
+\
+PREFIX##_darray* PREFIX##_darray_init(int init_size); \
+void PREFIX##_double_size(PREFIX##_darray* arr); \
+void PREFIX##_add_to_darray(PREFIX##_darray* arr, TYPE elem); \
+void PREFIX##_finalize_size(PREFIX##_darray* arr); \
+void PREFIX##_free(PREFIX##_darray* arr); \
+void PREFIX##_swap(PREFIX##_darray* arr, int i, int j);
+
+
+#define DEFINE_DYNAMIC_ARRAY_FOR_TYPE(TYPE, PREFIX) \
 PREFIX##_darray* PREFIX##_darray_init(int init_size){ \
     PREFIX##_darray* da = malloc_check(malloc(sizeof(PREFIX##_darray))); \
     da->size = init_size; \
@@ -42,7 +51,7 @@ void PREFIX##_free(PREFIX##_darray* arr){ \
 } \
  \
 void PREFIX##_swap(PREFIX##_darray* arr, int i, int j){ \
-    if(i > 0 && i < arr->elem_count && j > 0 && j < arr->elem_count){ \
+    if(i >= 0 && i < arr->elem_count && j >= 0 && j < arr->elem_count){ \
         TYPE tmp = arr->array[i]; \
         arr->array[i] = arr->array[j]; \
         arr->array[j] = tmp; \

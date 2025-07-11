@@ -3,6 +3,7 @@
 #include <math.h>
 #include "dynamic_array.h"
 #include <stdio.h>
+#include "run-length-code.h"
 
 DEFINE_DYNAMIC_ARRAY_FOR_TYPE(byte, byte);
 

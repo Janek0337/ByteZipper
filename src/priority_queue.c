@@ -3,6 +3,8 @@
 #include "dynamic_array.h"
 #include "priority_queue.h"
 
+DEFINE_DYNAMIC_ARRAY_FOR_TYPE(node_t*, node)
+
 node_t* make_node(byte byte, int count){
     node_t* elem = malloc_check(malloc(sizeof(node_t)));
     elem->count = count;
@@ -44,15 +46,20 @@ void add_to_queue(node_darray* arr, node_t* elem){
 }
 
 node_t* extract_min(node_darray* arr){
-    node_t* min = arr->array[0];
-    node_swap(arr, 0, arr->elem_count-1);
-    arr->elem_count--;
-    heapDown(arr, 0);
-    return min;
+    if(arr->elem_count > 0){
+        node_t* min = arr->array[0];
+        node_swap(arr, 0, arr->elem_count-1);
+        arr->elem_count--;
+        heapDown(arr, 0);
+        return min;
+    }
+    else {
+        return NULL;
+    }
 }
 
 void build_heap(node_darray* arr){
-    for(int i = (arr->elem_count-2)/2; i > 0; i--){
+    for(int i = (arr->elem_count-2)/2; i >= 0; i--){
         heapDown(arr, i);
     }
 }
