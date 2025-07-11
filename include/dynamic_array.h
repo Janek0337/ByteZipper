@@ -39,5 +39,16 @@ void PREFIX##_finalize_size(PREFIX##_darray* arr){ \
 void PREFIX##_free(PREFIX##_darray* arr){ \
     free(arr->array); \
     free(arr); \
+} \
+ \
+void PREFIX##_swap(PREFIX##_darray* arr, int i, int j){ \
+    if(i > 0 && i < arr->elem_count && j > 0 && j < arr->elem_count){ \
+        TYPE tmp = arr->array[i]; \
+        arr->array[i] = arr->array[j]; \
+        arr->array[j] = tmp; \
+    } \
+    else{ \
+        throw_fatal_error("Illegal access out of bounds"); \
+    } \
 }
 #endif
