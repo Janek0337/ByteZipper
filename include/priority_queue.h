@@ -2,16 +2,8 @@
 #define PQ_H
 #include "globals.h"
 #include "dynamic_array.h"
-
-typedef struct nodzik{
-    byte symbol;
-    int count;
-    struct nodzik* left;
-    struct nodzik* right;
-} node_t;
-
-
-DECLARE_DYNAMIC_ARRAY_FOR_TYPE(node_t*, node)
+#include "node_dynamic_array.h"
+#include "structs.h"
 
 node_t* make_node(byte byte, int count);
 void heapUp(node_darray* arr);

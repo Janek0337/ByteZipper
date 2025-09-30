@@ -3,8 +3,6 @@
 #include "dynamic_array.h"
 #include "priority_queue.h"
 
-DEFINE_DYNAMIC_ARRAY_FOR_TYPE(node_t*, node)
-
 node_t* make_node(byte byte, int count){
     node_t* elem = malloc_check(malloc(sizeof(node_t)));
     elem->count = count;
