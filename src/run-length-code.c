@@ -1,11 +1,9 @@
 #include <stdlib.h>
 #include "globals.h"
 #include <math.h>
-#include "dynamic_array.h"
 #include <stdio.h>
 #include "run-length-code.h"
-
-DEFINE_DYNAMIC_ARRAY_FOR_TYPE(byte, byte);
+#include "byte_dynamic_array.h"
 
 int run_length_code_encode(byte** THE_BUF, int bytesRead){
     /*

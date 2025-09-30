@@ -18,6 +18,12 @@ typedef struct {
     node_t** array; 
     int size; 
     int elem_count; 
-} node_darray; 
+} node_darray;
+
+typedef struct { 
+    byte* array; 
+    int size; 
+    int elem_count; 
+} byte_darray; 
 
 #endif
